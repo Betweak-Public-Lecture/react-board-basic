@@ -45,13 +45,14 @@ class App extends React.Component {
       }
       return item
     })
-
     this.setState({boardList:newBoardList})
   }
+
   postBoardItem(board){
     const newBoardList = this.state.boardList.concat({id:this.state.boardList.length + 1, ...board});
-    this.setState({baordList: newBoardList})
+    this.setState({boardList: newBoardList})
   }
+
 
   render(){
     return (

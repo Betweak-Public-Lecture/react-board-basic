@@ -1,24 +1,39 @@
 import React from 'react'
 import {Row, Col, Button, Form} from 'react-bootstrap'
 
-export default function BoardEdit({history, boardList, match, onEdit}) {
+export default function BoardEdit({history, match}) {
   const targetId = parseInt(match.params.boardId);
+  
+  const [titleInput, setTitleInput] = React.useState('')
+  const [contentInput, setContentInput] = React.useState('')
 
-  // Hook 필요.
-  const targetBoard = boardList.filter(item=>{
-    if(item.id===targetId){
-      return true;
-    }
-    return false;
-  });
-  const [titleInput, setTitleInput] = React.useState(targetBoard[0].title)
-  const [contentInput, setContentInput] = React.useState(targetBoard[0].content)
-  if (targetBoard.length !== 1){
-    return (
-      <div>
-        <h2>404...</h2>
-      </div>
-    )
+  React.useEffect(()=>{
+    fetch(`/api/board/${targetId}`, {
+      method: 'GET'
+    }).then(resp=>{
+      return resp.json()
+    }).then(data=>{
+      setTitleInput(data.result[0].title)
+      setContentInput(data.result[0].content)
+    })
+  }, []);
+
+  const onEdit = function(targetId, {title, content}){
+    fetch(`/api/board/${targetId}`, {
+      method: 'PUT',
+      headers: {
+        'CONTENT-TYPE': 'application/json'
+      },
+      body: JSON.stringify({
+        title,
+        content
+      })
+    }).then(resp=>{
+      return resp.json();
+    }).then(data=>{
+      alert("수정되었습니다.");
+      history.push(`/board/${targetId}`)
+    })
   }
 
   return (
@@ -44,8 +59,8 @@ export default function BoardEdit({history, boardList, match, onEdit}) {
             <Button onClick={
               ()=>{
                 console.log(titleInput)
-                onEdit(targetId, {id: targetId, title: titleInput,  content: contentInput})
-                history.push('/board')
+                onEdit(targetId, {title: titleInput,  content: contentInput})
+                // history.push('/board')
               }
             } 
               variant='info'>수정</Button>

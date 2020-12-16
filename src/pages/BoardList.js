@@ -2,7 +2,29 @@ import React from 'react';
 import {Row, Col, ListGroup, Button} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
-export default function BoardList({history, boardList}) {
+export default function BoardList({history}) {
+
+  const [boardList, setBoardList] = React.useState([]);
+
+  const [refresh, setRefresh] = React.useState(false);
+
+
+  // fetch: HTTP 요청을 보내는 함수
+  // fetch(url, <option>)
+
+  // React.useEffect Hook
+  React.useEffect(()=>{
+    fetch("/api/board", {
+      method:'GET',
+    }).then((response)=>{
+      return response.json();
+    }).then((data)=>{
+      console.log(data);
+      setBoardList(data.result)
+    })
+  }, []);
+  
+
 
   return (
     <div>

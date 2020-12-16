@@ -1,9 +1,28 @@
 import React from 'react';
 import {Row, Col, Form, Button} from 'react-bootstrap'
 
-export default function BoardWrite({history, onPost}){
+export default function BoardWrite({history}){
   const [titleInput, setTitleInput] = React.useState('');
   const [contentInput, setContentInput] = React.useState('');
+
+  const onPost = function(boardData){
+    const {title, content} = boardData;
+    fetch('/api/board', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: title,
+        content: content
+      })
+    }).then(response=>{
+      return response.json()
+    }).then(data=>{
+      console.log(data);
+      history.push('/board');
+    })
+  }
 
   return (
     <div>
